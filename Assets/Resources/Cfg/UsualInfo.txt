@@ -1,3 +1,0 @@
-﻿Id,Explain,Info
-id,解释,信息
-0,默认动作对应,
