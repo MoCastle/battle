@@ -7,6 +7,7 @@ namespace GameScene
     public class PlayerObj : BaseActorObj
     {
         public List<FriendlyNPC> friendlyNPCList;
+        public TheNPC npc;
         #region 内部属性
         InputInfo m_CurOrder;
         public bool pushed;

@@ -3,61 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using Dialog;
 using GameScene;
-
-public class FriendlyNPC : NPCObj
-{
+public class TheNPC : MonoBehaviour {
+    [SerializeField]
+    [Header("对话信息")]
+    public ActorDialogInfo[] DialogInfos;
     public KeyInput input;
     public DialogObj dialogArea;
     public UIMgr uIMgr;
     public GameObject dialogTips;
     private bool dialoging;
     float time;
-
-    protected override void Init()
+    private void Start()
     {
-        m_IDLayer = LayerMask.GetMask("Default");//1 << LayerMask.NameToLayer("Enemy");
-        m_ActionCtrler = new ActionCtrler(this, m_CharacterAnim.Animator);//, info.ActorActionList);
-        dialogArea.enterTrigerAction = TriggerDialog;
-        dialogArea.leaveTrigerAction = HideDialog;
-        dialogTips.active = false;
+        //dialogArea.enterTrigerAction += EnterTriggerAction;
+        //dialogArea.leaveTrigerAction += LeaveTriggerAction;
     }
-
-    void TriggerDialog(PlayerObj playerObj)
+    public void EnterTriggerAction(PlayerObj player)
     {
-        
         dialogTips.active = true;
-        playerObj.friendlyNPCList.Add(this);
-        if(playerObj== null)
-        {
-            Debug.Log("a");
-        }
     }
-    void HideDialog(PlayerObj playerObj)
+    public void LeaveTriggerAction(PlayerObj player)
     {
         dialogTips.active = false;
-        playerObj.friendlyNPCList.Remove(this);
     }
-    
-    public void OnDialog()
+    public void OnDialog(int id = 0)
     {
-        if(time - Time.time>0)
+        if (time - Time.time > 0)
         {
             return;
         }
-        if(dialoging || DialogInfos.Length <1|| DialogInfos[0].linesInfo.Length <1)
+        if (dialoging || DialogInfos.Length < 1 || DialogInfos[id].linesInfo.Length < 1)
         {
             return;
         }
         dialoging = true;
 
-        DialogLine[] diArr = DialogInfos[0].linesInfo;
-        string[] strList = DialogInfos[0].GetDialogInfo();
+        DialogLine[] diArr = DialogInfos[id].linesInfo;
+        string[] strList = DialogInfos[id].GetDialogInfo();
         InputManager.Singleton.PauseInput();
-        uIMgr.OpenPanel<UITextPanel>().StartTalk(strList, ()=> { OnHideDialog();
-            if(DialogInfos[0].onDialogEnd!=null) DialogInfos[0].onDialogEnd(); } , OnForceCancelDialog);
+        uIMgr.OpenPanel<UITextPanel>().StartTalk(strList, () => {
+            OnHideDialog();
+            if (DialogInfos[id].onDialogEnd != null) DialogInfos[id].onDialogEnd();
+        }, 
+        OnForceCancelDialog);
         InputManager.Singleton.PauseInput();
         dialogTips.active = false;
-
     }
 
     public void OnForceCancelDialog()
@@ -81,8 +71,5 @@ public class FriendlyNPC : NPCObj
         InputManager.Singleton.ContinueInput();
         dialoging = false;
     }
-    private void Update()
-    {
-        
-    }
+
 }

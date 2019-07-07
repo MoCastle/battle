@@ -13,8 +13,8 @@ public class BattleSceneDirector : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         npc.DialogInfos[0].onDialogEnd = OnBattleStart;
-        enemy.onDeath = OnEnemyDeath;
-        player.onDeath = OnPlayerDeath;
+        enemy.onDeath += OnEnemyDeath;
+        player.onDeath += OnPlayerDeath;
     }
     public void OnBattleStart()
     {
